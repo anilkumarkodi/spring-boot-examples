@@ -1,15 +1,19 @@
 package com.in28minutes.springboot.service;
 
+import com.in28minutes.springboot.model.Course;
+import com.in28minutes.springboot.model.Student;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-
-import org.springframework.stereotype.Component;
-
-import com.in28minutes.springboot.model.Course;
-import com.in28minutes.springboot.model.Student;
 
 @Component
 public class StudentService {
@@ -102,5 +106,22 @@ public class StudentService {
 		student.getCourses().add(course);
 
 		return course;
+	}
+
+	public Page<Student> findPaginated(Pageable pageable) {
+		int pageSize = pageable.getPageSize();
+		int currentPage = pageable.getPageNumber();
+		int startItem = currentPage * pageSize;
+		List<Student> students;
+		final List<Student> studentList = retrieveAllStudents();
+
+		if (studentList.size() < startItem) {
+			students = Collections.emptyList();
+		} else {
+			int toIndex = Math.min(startItem + pageSize, studentList.size());
+			students = studentList.subList(startItem, toIndex);
+		}
+
+		return new PageImpl<>(students, PageRequest.of(currentPage, pageSize), studentList.size());
 	}
 }

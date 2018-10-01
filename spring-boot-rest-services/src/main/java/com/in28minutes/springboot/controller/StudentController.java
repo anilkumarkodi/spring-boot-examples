@@ -4,6 +4,8 @@ import com.in28minutes.springboot.model.Course;
 import com.in28minutes.springboot.model.Student;
 import com.in28minutes.springboot.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -34,7 +37,7 @@ public class StudentController {
 		Resource<Student> resource = new Resource<Student>(student);
 
 		ControllerLinkBuilder linkTo = linkTo( methodOn( this.getClass() )
-				.retrieveStudents() );
+				.retrieveStudents(1, 100) );
 		resource.add( linkTo.withRel("all-students") );
 		return resource;
 	}
@@ -45,9 +48,13 @@ public class StudentController {
 			@PathVariable String studentId) {
 		return studentService.retrieveCourses(studentId);
 	}
+
 	@GetMapping("/students")
-	public List<Student> retrieveStudents() {
-		return studentService.retrieveAllStudents();
+	public Page<Student> retrieveStudents(@RequestParam int page,
+										  @RequestParam int size){
+		final PageRequest pageable = PageRequest.of(page - 1, size);
+		Page<Student> studentPage =studentService.findPaginated(pageable);
+		return studentPage;
 	}
 
 	@PostMapping("/students/{studentId}/courses")
