@@ -1,10 +1,7 @@
 package com.in28minutes.springboot.controller;
 
-import static org.junit.Assert.assertTrue;
-
-import java.nio.charset.Charset;
-import java.util.Arrays;
-
+import com.in28minutes.springboot.StudentApplication;
+import com.in28minutes.springboot.model.Course;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,13 +13,12 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.in28minutes.springboot.StudentApplication;
-import com.in28minutes.springboot.model.Course;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = StudentApplication.class,
@@ -38,9 +34,9 @@ public class StudentControllerIT {
 
 	@Before
 	public void before() {
-		headers.add("Authorization", createHttpAuthenticationHeaderValue(
-				"user1", "secret1"));
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+//		headers.add("Authorization", createHttpAuthenticationHeaderValue(
+//				"user1", "secret1"));
+//		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 	}
 
 	@Test
@@ -80,17 +76,17 @@ public class StudentControllerIT {
 		return "http://localhost:" + port + uri;
 	}
 
-	private String createHttpAuthenticationHeaderValue(String userId,
-			String password) {
-
-		String auth = userId + ":" + password;
-
-		byte[] encodedAuth = Base64.encode(auth.getBytes(Charset
-				.forName("US-ASCII")));
-
-		String headerValue = "Basic " + new String(encodedAuth);
-
-		return headerValue;
-	}
+//	private String createHttpAuthenticationHeaderValue(String userId,
+//			String password) {
+//
+//		String auth = userId + ":" + password;
+//
+//		byte[] encodedAuth = Base64.encode(auth.getBytes(Charset
+//				.forName("US-ASCII")));
+//
+//		String headerValue = "Basic " + new String(encodedAuth);
+//
+//		return headerValue;
+//	}
 
 }
